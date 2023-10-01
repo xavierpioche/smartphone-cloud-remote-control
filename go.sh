@@ -13,7 +13,7 @@ SCRCPY="scrcpy"
 GSTLAUNCH="gst-launch-1.0"
 VIDEOFILE=${PHONE_NAME}-${DATE}.ogg
 #
-nohup ${SCRCPY} --window-title=${PHONE_NAME} &
+nohup ${SCRCPY} --window-title=${PHONE_NAME} --serial=${ANDROID_SERIAL} --always-on-top --window-x=0 --window-y=0 &
 sleep 5
 WINDOW_ID=`xwininfo -name ${PHONE_NAME} | grep -e "Window id" | awk '{ print $4 }'` 
 #
