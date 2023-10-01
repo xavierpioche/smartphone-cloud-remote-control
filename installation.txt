@@ -1,0 +1,19 @@
+# DOWNLOADS
+# kinesis plugin :
+# https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp/blob/master/docs/linux.md
+
+sudo apt install scrcpy
+
+sudo apt install ffmpeg libsdl2-2.0-0 adb wget \
+         gcc git pkg-config meson ninja-build libsdl2-dev \
+         libavcodec-dev libavdevice-dev libavformat-dev libavutil-dev \
+         libswresample-dev libusb-1.0-0 libusb-1.0-0-dev
+
+sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+
+sudo apt-get install x11vnc
+
+# package to compile aws kinesis plugin
+sudo apt-get install libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools
+
+sudo apt install cmake pkg-config m4
