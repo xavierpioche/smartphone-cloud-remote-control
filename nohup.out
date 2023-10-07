@@ -30,3 +30,11 @@ INFO: Initial texture: 1440x2880
 
 WARN: Killing the server...
 scrcpy 1.21 <https://github.com/Genymobile/scrcpy>
+/usr/share/scrcpy/scrcpy-server: 1 file pushed. 3.7 MB/s (39473 bytes in 0.010s)
+[server] INFO: Device: Sony H8416 (Android 10)INFO: Renderer: opengl
+INFO: OpenGL version: 4.6 (Compatibility Profile) Mesa 23.0.4-0ubuntu1~22.04.1
+INFO: Trilinear filtering enabled
+INFO: Initial texture: 1440x2880
+
+WARN: Killing the server...
+scrcpy 1.21 <https://github.com/Genymobile/scrcpy>
