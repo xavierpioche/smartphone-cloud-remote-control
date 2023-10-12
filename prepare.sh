@@ -49,7 +49,8 @@ aws --profile default iam create-role --role-name ${android_role} --assume-role-
 # - attach a permission to the role
 aws --profile default iam put-role-policy --role-name ${android_role} --policy-name ${android_policy} --policy-document 'file://iam-permission-document.json' 
 # - create a role alias - needed for iot
-aws --profile default iot create-role-alias --role-alias ${android_role_alias} --role-arn $(awk 'NR==1 {print $2 ; exit}' iam-role.json) --credential-duration-seconds 3600 > iot-role-alias.json
+aws --profile default iot create-role-alias --role-alias ${android_role_alias} --role-arn $(jq --raw-output '.Role.Arn' iam-role.json) --credential-duration-seconds 3600 > iot-role-alias.json
+#aws --profile default iot create-role-alias --role-alias ${android_role_alias} --role-arn $(awk 'NR==1 {print $2 ; exit}' iam-role.json) --credential-duration-seconds 3600 > iot-role-alias.json
 ##
 cat > iot-policy-document.json << EOF
 {
@@ -60,7 +61,7 @@ cat > iot-policy-document.json << EOF
             "Action": [
                 "iot:AssumeRoleWithCertificate"
             ],
-            "Resource": "$(awk 'NR==1 {print $2 ; exit}' iot-role-alias.json)"
+            "Resource": "$(jq --raw-output '.roleAliasArn' iot-role-alias.json)"
         }
     ]
 }
@@ -71,9 +72,11 @@ aws --profile default iot create-policy --policy-name ${android_policy_iot} --po
 # - create the certificates
 aws --profile default iot create-keys-and-certificate --set-as-active --certificate-pem-outfile certificate.pem --public-key-outfile public.pem.key --private-key-outfile private.pem.key > certificate.sec
 # - attach the policy for iot 
-aws --profile default iot attach-policy --policy-name ${android_policy_iot} --target $(awk 'NR==1 {print $1 ; exit}' certificate.sec)
+aws --profile default iot attach-policy --policy-name ${android_policy_iot} --target $(jq --raw-output '.certificateArn' certificate.sec)
+#aws --profile default iot attach-policy --policy-name ${android_policy_iot} --target $(awk 'NR==1 {print $1 ; exit}' certificate.sec)
 # - attach the stream
-aws --profile default iot attach-thing-principal --thing-name ${android_stream} --principal $(awk 'NR==1 {print $1 ; exit}' certificate.sec)
+aws --profile default iot attach-thing-principal --thing-name ${android_stream} --principal $(jq --raw-output '.certificateArn' certificate.sec)
+#aws --profile default iot attach-thing-principal --thing-name ${android_stream} --principal $(awk 'NR==1 {print $1 ; exit}' certificate.sec)
 # get the iot endpoint
 aws --profile default iot describe-endpoint --endpoint-type iot:CredentialProvider --output text > iot-credential-provider.sec
 # get aws CA certificate
@@ -91,4 +94,6 @@ AWS_SESSION_TOKEN=$(jq --raw-output '.credentials.sessionToken' token.json)
 aws kinesisvideo describe-stream --stream-name ${android_stream}
 #
 #
-## gst-launch-1.0 ximagesrc xid=0x4c00016 ! videoconvert ! x264enc  bframes=0 key-int-max=45 bitrate=500 tune=zerolatency ! video/x-h264,stream-format=avc,alignment=au ! kvssink stream-name="${android_stream}" aws-region=us-east-1 iot-certificate="iot-certificate,endpoint=cv27mgpj6bkrn.credentials.iot.us-east-1.amazonaws.com,cert-path=certificate.pem,key-path=private.pem.key,ca-path=cacert.pem,role-aliases=${android_role_alias}" access-key="${AWS_SECRET_KEY_ID}" secret-key="${AWS_SECRET_ACCESS_KEY}"
+PHONE_NAME="my_phone"
+WINDOW_ID=`xwininfo -name ${PHONE_NAME} | grep -e "Window id" | awk '{ print $4 }'`
+gst-launch-1.0 ximagesrc xid=${WINDOW_ID} ! videoconvert ! x264enc  bframes=0 key-int-max=45 bitrate=500 tune=zerolatency ! video/x-h264,stream-format=avc,alignment=au ! kvssink stream-name="${android_stream}" aws-region=us-east-1 iot-certificate="iot-certificate,endpoint=cv27mgpj6bkrn.credentials.iot.us-east-1.amazonaws.com,cert-path=certificate.pem,key-path=private.pem.key,ca-path=cacert.pem,role-aliases=${android_role_alias}" access-key="${AWS_SECRET_KEY_ID}" secret-key="${AWS_SECRET_ACCESS_KEY}"
